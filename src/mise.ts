@@ -104,7 +104,7 @@ const completionSpec: Fig.Spec = {
       subcommands: [
         {
           name: ["install", "i", "a", "add"],
-          description: "Install a plugin'",
+          description: "Install a plugin\ne.g.: node, ruby",
           args: [
             {
               name: "NEW_PLUGIN",
@@ -117,10 +117,98 @@ const completionSpec: Fig.Spec = {
               isOptional: true,
             },
           ],
+          options: [
+            {
+              name: ["-C", "--cd"],
+              description: "Change directory before running command",
+              args: {
+                name: "DIR",
+              },
+            },
+            {
+              name: ["-f", "--force"],
+              description: "Reinstall even if plugin exists",
+            },
+            {
+              name: ["-a", "--all"],
+              description: "Install all missing plugins",
+            },
+            {
+              name: ["-P", "--profile"],
+              description: "Set the profile (environment)",
+              args: {
+                name: "PROFILE",
+              },
+            },
+            {
+              name: ["-v", "--verbose"],
+              description: "Show installation output",
+            },
+            {
+              name: ["-q", "--quiet"],
+              description: "Suppress non-error messages",
+            },
+            {
+              name: ["-y", "--yes"],
+              description: "Answer yes to all confirmation prompts",
+            },
+            {
+              name: ["-h", "--help"],
+              description: "Print help (see more with '--help')",
+            },
+          ]
         },
         {
           name: ["link", "ln"],
           description: "Symlinks a plugin into mise",
+          args: [
+            {
+              name: "NAME",
+              description: "The name of the plugin\ne.g.: node, ruby",
+              isOptional: true,
+            },
+            {
+              name: "PATH",
+              description: "The local path to the plugin\ne.g.: ./mise-node",
+              isOptional: true,
+            },
+          ],
+          options: [
+            {
+              name: ["-C", "--cd"],
+              description: "Change directory before running command",
+              args: {
+                name: "DIR",
+              },
+            },
+            {
+              name: ["-f", "--force"],
+              description: "Overwrite existing plugin",
+            },
+            {
+              name: ["-P", "--profile"],
+              description: "Set the profile (environment)",
+              args: {
+                name: "PROFILE",
+              },
+            },
+            {
+              name: ["-q", "--quiet"],
+              description: "Suppress non-error messages",
+            },
+            {
+              name: ["-v", "--verbose"],
+              description: "Show extra output (use -vv for even more)",
+            },
+            {
+              name: ["-y", "--yes"],
+              description: "Answer yes to all confirmation prompts",
+            },
+            {
+              name: ["-h", "--help"],
+              description: "Print help (see more with '--help')",
+            },
+          ],
         },
         {
           name: ["uninstall", "remove", "rm"],
@@ -129,7 +217,60 @@ const completionSpec: Fig.Spec = {
             name: "PLUGIN",
             description: "Plugin(s) to remove",
             isOptional: true,
+            isDangerous: true,
+            generators: {
+              script: ["mise", "plugins", "ls", "--quiet"],
+              postProcess: (out) => {
+                return out
+                  .split("\n")
+                  .filter(Boolean)
+                  .map((pluginName) => ({
+                    name: pluginName,
+                  }));
+              },
+            },
           },
+          options: [
+            {
+              name: ["-C", "--cd"],
+              description: "Change directory before running command",
+              args: {
+                name: "DIR",
+                template: "folders",
+              },
+            },
+            {
+              name: ["-p", "--purge"],
+              description: "Also remove the plugin's installs, downloads, and cache"
+            },
+            {
+              name: ["-a", "--all"],
+              description: "Remove all plugins"
+            },
+            {
+              name: ["-P", "--profile"],
+              description: "Set the profile (environment)",
+              args: {
+                name: "PROFILE"
+              },
+            },
+            {
+              name: ["-q", "--quiet"],
+              description: "Suppress non-error messages",
+            },
+            {
+              name: ["-v", "--verbose"],
+              description: "Show extra output (use -vv for even more)",
+            },
+            {
+              name: ["-y", "--yes"],
+              description: "Answer yes to all confirmation prompts"
+            },
+            {
+              name: ["-h", "--help"],
+              description: "Print help (see more with '--help')",
+            },
+          ],
         },
         {
           name: ["update", "up", "upgrade"],
@@ -138,20 +279,191 @@ const completionSpec: Fig.Spec = {
             name: "PLUGIN",
             description: "Plugin(s) to update",
             isOptional: true,
+            isDangerous: true,
+            generators: {
+              script: ["mise", "plugins", "ls", "--quiet"],
+              postProcess: (out) => {
+                return out
+                  .split("\n")
+                  .filter(Boolean)
+                  .map((pluginName) => ({
+                    name: pluginName,
+                  }));
+              },
+            },
           },
+          options: [
+            {
+              name: ["-C", "--cd"],
+              description: "Change directory before running command",
+              args: {
+                name: "DIR",
+              },
+            },
+            {
+              name: ["-j", "--jobs"],
+              description: "Number of jobs to run in parallel\n Default: 4",
+              args: {
+                name: "JOBS"
+              },
+            },
+            {
+              name: ["-P", "--profile"],
+              description: "Set the profile (environment)",
+              args: {
+                name: "PROFILE"
+              },
+            },
+            {
+              name: ["-q", "--quiet"],
+              description: "Suppress non-error messages",
+            },
+            {
+              name: ["-v", "--verbose"],
+              description: "Show extra output (use -vv for even more)",
+            },
+            {
+              name: ["-y", "--yes"],
+              description: "Answer yes to all confirmation prompts"
+            },
+            {
+              name: ["-h", "--help"],
+              description: "Print help (see more with '--help')",
+            },
+          ],
         },
         {
           name: ["ls", "list"],
           description: "List installed plugins",
+          options: [
+            {
+              name: ["-C", "--cd"],
+              description: "Change directory before running command",
+              args: {
+                name: "DIR",
+              },
+            },
+            {
+              name: ["-c", "--core"],
+              description: "The built-in plugins only\nNormally these are not shown"
+            },
+            {
+              name: ["-P", "--profile"],
+              description: "Set the profile (environment)",
+              args: {
+                name: "PROFILE"
+              },
+            },
+            {
+              name: "--user",
+              description: "List installed plugins"
+            },
+            {
+              name: ["-u", "--urls"],
+              description: "Show the git url for each plugin\ne.g.: e.g.: https://github.com/asdf-vm/asdf-nodejs.git"
+            },
+            {
+              name: ["-q", "--quiet"],
+              description: "Suppress non-error messages",
+            },
+            {
+              name: ["-v", "--verbose"],
+              description: "Show extra output (use -vv for even more)",
+            },
+            {
+              name: ["-y", "--yes"],
+              description: "Answer yes to all confirmation prompts"
+            },
+            {
+              name: ["-h", "--help"],
+              description: "Print help (see more with '--help')",
+            },
+          ],
         },
         {
           name: ["ls-remote", "list-remote", "list-all"],
           description: "List all available remote plugins",
+          options: [
+            {
+              name: ["-C", "--cd"],
+              description: "Change directory before running command",
+              args: {
+                name: "DIR",
+              },
+            },
+            {
+              name: ["-u", "--urls"],
+              description: "Show the git url for each plugin\ne.g.: e.g.: https://github.com/mise-plugins/mise-poetry.git"
+            },
+            {
+              name: ["-P", "--profile"],
+              description: "Set the profile (environment)",
+              args: {
+                name: "PROFILE"
+              },
+            },
+            {
+              name: ["-q", "--quiet"],
+              description: "Suppress non-error messages",
+            },
+            {
+              name: ["-v", "--verbose"],
+              description: "Show extra output (use -vv for even more)",
+            },
+            {
+              name: ["-y", "--yes"],
+              description: "Answer yes to all confirmation prompts"
+            },
+            {
+              name: ["-h", "--help"],
+              description: "Print help (see more with '--help')",
+            },
+          ],
         },
         {
           name: "help",
           description:
             "Print this message or the help of the given subcommand(s)",
+        },
+      ],
+      options: [
+        {
+          name: ["-h", "--help"],
+          description: "Print help (see more with '--help')",
+        },
+        {
+          name: ["-c", "--core"],
+          description: "The built-in plugins only\nNormally these are not shown",
+        },
+        {
+          name: ["-y", "--yes"],
+          description: "Answer yes to all confirmation prompts"
+        },
+        {
+          name: ["-u", "--urls"],
+          description: "Show the git url for each plugin\ne.g.: https://github.com/asdf-vm/asdf-nodejs.git"
+        },
+        {
+          name: ["-v", "--verbose"],
+          description: "Show extra output (use -vv for even more)",
+        },
+        {
+          name: ["-q", "--quiet"],
+          description: "Suppress non-error messages",
+        },
+        {
+          name: ["-P", "--profile"],
+          description: "Set the profile (environment)",
+          args: {
+            name: "PROFILE"
+          },
+        },
+        {
+          name: ["-C", "--cd"],
+          description: "Change directory before running command",
+          args: {
+            name: "DIR"
+          },
         },
       ],
     },
@@ -242,31 +554,35 @@ const completionSpec: Fig.Spec = {
   ],
   options: [
     {
-      name: ["--help", "-h"],
+      name: ["-h", "--help"],
       description: "Print help (see more with '--help')",
     },
     {
-      name: ["--version", "-V"],
+      name: ["-V", "--version"],
       description: "Print version",
     },
     {
-      name: ["--verbose", "-v"],
+      name: ["-v", "--verbose"],
       description: "Show extra output (use -vv for even more)",
     },
     {
-      name: ["--quiet", "-q"],
+      name: ["-q", "--quiet"],
       description: "Suppress non-error messages",
     },
     {
-      name: ["--profile", "-P"],
+      name: ["-P", "--profile"],
       description: "Set the profile (environment)",
+      args: {
+        name: "PROFILE"
+      },
     },
     {
-      name: ["--cd", "-C"],
+      name: ["-C", "--cd"],
       description: "Change directory before running command",
+      args: {
+        name: "DIR"
+      },
     },
-  ],
-  // Only uncomment if mise takes an argument
-  // args: {}
+  ]
 };
 export default completionSpec;
