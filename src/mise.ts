@@ -156,7 +156,7 @@ const completionSpec: Fig.Spec = {
               name: ["-h", "--help"],
               description: "Print help (see more with '--help')",
             },
-          ]
+          ],
         },
         {
           name: ["link", "ln"],
@@ -241,17 +241,18 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-p", "--purge"],
-              description: "Also remove the plugin's installs, downloads, and cache"
+              description:
+                "Also remove the plugin's installs, downloads, and cache",
             },
             {
               name: ["-a", "--all"],
-              description: "Remove all plugins"
+              description: "Remove all plugins",
             },
             {
               name: ["-P", "--profile"],
               description: "Set the profile (environment)",
               args: {
-                name: "PROFILE"
+                name: "PROFILE",
               },
             },
             {
@@ -264,7 +265,7 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-y", "--yes"],
-              description: "Answer yes to all confirmation prompts"
+              description: "Answer yes to all confirmation prompts",
             },
             {
               name: ["-h", "--help"],
@@ -304,14 +305,14 @@ const completionSpec: Fig.Spec = {
               name: ["-j", "--jobs"],
               description: "Number of jobs to run in parallel\n Default: 4",
               args: {
-                name: "JOBS"
+                name: "JOBS",
               },
             },
             {
               name: ["-P", "--profile"],
               description: "Set the profile (environment)",
               args: {
-                name: "PROFILE"
+                name: "PROFILE",
               },
             },
             {
@@ -324,7 +325,7 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-y", "--yes"],
-              description: "Answer yes to all confirmation prompts"
+              description: "Answer yes to all confirmation prompts",
             },
             {
               name: ["-h", "--help"],
@@ -345,22 +346,24 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-c", "--core"],
-              description: "The built-in plugins only\nNormally these are not shown"
+              description:
+                "The built-in plugins only\nNormally these are not shown",
             },
             {
               name: ["-P", "--profile"],
               description: "Set the profile (environment)",
               args: {
-                name: "PROFILE"
+                name: "PROFILE",
               },
             },
             {
               name: "--user",
-              description: "List installed plugins"
+              description: "List installed plugins",
             },
             {
               name: ["-u", "--urls"],
-              description: "Show the git url for each plugin\ne.g.: e.g.: https://github.com/asdf-vm/asdf-nodejs.git"
+              description:
+                "Show the git url for each plugin\ne.g.: e.g.: https://github.com/asdf-vm/asdf-nodejs.git",
             },
             {
               name: ["-q", "--quiet"],
@@ -372,7 +375,7 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-y", "--yes"],
-              description: "Answer yes to all confirmation prompts"
+              description: "Answer yes to all confirmation prompts",
             },
             {
               name: ["-h", "--help"],
@@ -393,13 +396,14 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-u", "--urls"],
-              description: "Show the git url for each plugin\ne.g.: e.g.: https://github.com/mise-plugins/mise-poetry.git"
+              description:
+                "Show the git url for each plugin\ne.g.: e.g.: https://github.com/mise-plugins/mise-poetry.git",
             },
             {
               name: ["-P", "--profile"],
               description: "Set the profile (environment)",
               args: {
-                name: "PROFILE"
+                name: "PROFILE",
               },
             },
             {
@@ -412,7 +416,7 @@ const completionSpec: Fig.Spec = {
             },
             {
               name: ["-y", "--yes"],
-              description: "Answer yes to all confirmation prompts"
+              description: "Answer yes to all confirmation prompts",
             },
             {
               name: ["-h", "--help"],
@@ -433,15 +437,17 @@ const completionSpec: Fig.Spec = {
         },
         {
           name: ["-c", "--core"],
-          description: "The built-in plugins only\nNormally these are not shown",
+          description:
+            "The built-in plugins only\nNormally these are not shown",
         },
         {
           name: ["-y", "--yes"],
-          description: "Answer yes to all confirmation prompts"
+          description: "Answer yes to all confirmation prompts",
         },
         {
           name: ["-u", "--urls"],
-          description: "Show the git url for each plugin\ne.g.: https://github.com/asdf-vm/asdf-nodejs.git"
+          description:
+            "Show the git url for each plugin\ne.g.: https://github.com/asdf-vm/asdf-nodejs.git",
         },
         {
           name: ["-v", "--verbose"],
@@ -455,14 +461,14 @@ const completionSpec: Fig.Spec = {
           name: ["-P", "--profile"],
           description: "Set the profile (environment)",
           args: {
-            name: "PROFILE"
+            name: "PROFILE",
           },
         },
         {
           name: ["-C", "--cd"],
           description: "Change directory before running command",
           args: {
-            name: "DIR"
+            name: "DIR",
           },
         },
       ],
@@ -573,16 +579,16 @@ const completionSpec: Fig.Spec = {
       name: ["-P", "--profile"],
       description: "Set the profile (environment)",
       args: {
-        name: "PROFILE"
+        name: "PROFILE",
       },
     },
     {
       name: ["-C", "--cd"],
       description: "Change directory before running command",
       args: {
-        name: "DIR"
+        name: "DIR",
       },
     },
-  ]
+  ],
 };
 export default completionSpec;
