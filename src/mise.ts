@@ -650,6 +650,27 @@ const completionSpec: Fig.Spec = {
     {
       name: "prune",
       description: "Delete unused versions of tools",
+      args: {
+        name: "PLUGIN",
+        description: "Prune only versions from this plugin(s)",
+        isOptional: true,
+        isDangerous: true,
+      },
+      options: [
+        {
+          name: ["-n", "--dry-run"],
+          description: "Do not actually delete anything",
+        },
+        {
+          name: "--configs",
+          description:
+            "Prune only tracked and trusted configuration links that point to non-existent configurations",
+        },
+        {
+          name: "--tools",
+          description: "Prune only unused versions of tools",
+        },
+      ],
     },
     {
       name: "registry",
@@ -662,46 +683,397 @@ const completionSpec: Fig.Spec = {
     {
       name: ["run", "r"],
       description: "[experimental] Run a tasks",
+      args: [
+        {
+          name: "TASK",
+          description:
+            "Tasks to run \n Can specify multiple tasks by separating with `:::` \n e.g.: mise run task1 arg1 arg2 ::: task2 arg1 arg2 [default: default]",
+        },
+        {
+          name: "ARGS",
+          description:
+            'Arguments to pass to the tasks. Use ":::" to separate tasks',
+        },
+      ],
+      options: [
+        {
+          name: ["-n", "--dry-run"],
+          description:
+            "Don't actually run the tasks(s), just print them in order of execution",
+        },
+        {
+          name: ["-f", "--force"],
+          description: "Force the tasks to run even if outputs are up to date",
+        },
+        {
+          name: ["-p", "--prefix"],
+          description:
+            "Print stdout/stderr by line, prefixed with the tasks's label \n Defaults to true if --jobs > 1 \n Configure with `task_output` config or `MISE_TASK_OUTPUT` env var",
+        },
+        {
+          name: ["-i", "--interleave"],
+          description:
+            "Print directly to stdout/stderr instead of by line \n Defaults to true if --jobs == 1 \n Configure with `task_output` config or `MISE_TASK_OUTPUT` env var",
+        },
+        {
+          name: ["-t", "--tool"],
+          description: "Tool(s) to also add e.g.: node@20 python@3.10",
+          args: {
+            name: "TOOL@VERSION",
+          },
+        },
+        {
+          name: ["-j", "--jobs"],
+          description:
+            "Number of tasks to run in parallel [default: 4] \n Configure with `jobs` config or `MISE_JOBS` env var [env: MISE_JOBS=]",
+          args: {
+            name: "JOBS",
+          },
+        },
+        {
+          name: ["-r", "--raw"],
+          description:
+            "Read/write directly to stdin/stdout/stderr instead of by line \n Configure with `raw` config or `MISE_RAW` env var",
+        },
+        {
+          name: "--timings",
+          description: "Shows elapsed time after each tasks",
+        },
+      ],
     },
     {
       name: "self-update",
       description: "Updates mise itself",
+      args: {
+        name: "VERSION",
+        description: "Update to a specific version",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-f", "--force"],
+          description: "Update even if already up to date",
+        },
+        {
+          name: "--no-plugins",
+          description: "Disable auto-updating plugins",
+        },
+      ],
     },
     {
       name: "set",
       description: "Manage environment variables",
+      args: {
+        name: "ENV_VARS",
+        description:
+          "Environment variable(s) to set \n e.g.: NODE_ENV=production",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-g", "--global"],
+          description: "Set the environment variable in the global config file",
+        },
+        {
+          name: "--file",
+          description: "The TOML file to update",
+          args: {
+            name: "FILE",
+          },
+        },
+      ],
     },
     {
       name: "settings",
       description: "Manage settings",
+      subcommands: [
+        {
+          name: "get",
+          description: "Show a current setting",
+          args: {
+            name: "SETTING",
+            description: "The setting to show",
+          },
+        },
+        {
+          name: ["ls", "list"],
+          description: "Show current settings",
+          options: [
+            {
+              name: "--keys",
+              description: "Only display key names for each setting",
+            },
+          ],
+        },
+        {
+          name: ["set", "add", "create"],
+          description: "Add/update a setting",
+          args: [
+            {
+              name: "SETTING",
+              description: "The setting to set",
+            },
+            {
+              name: "VALUE",
+              description: "The value to set",
+            },
+          ],
+        },
+        {
+          name: ["unset", "rm", "remove", "delete", "del"],
+          description: "Clears a setting",
+          args: {
+            name: "SETTING",
+            description: "The setting to remove",
+          },
+        },
+        {
+          name: "help",
+          description:
+            "Print this message or the help of the given subcommand(s)",
+        },
+      ],
+      options: [
+        {
+          name: "--keys",
+          description: "Only display key names for each setting",
+        },
+      ],
     },
     {
       name: ["shell", "sh"],
       description: "Sets a tool version for the current session",
+      args: {
+        name: "TOOL@VERSION",
+        description: "Tool(s) to use",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-j", "--jobs"],
+          description:
+            "Number of jobs to run in parallel [default: 4] [env: MISE_JOBS=]",
+          args: {
+            name: "JOBS",
+          },
+        },
+        {
+          name: "--raw",
+          description:
+            "Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1",
+        },
+        {
+          name: ["-u", "--unset"],
+          description: "Removes a previously set version",
+        },
+      ],
     },
     {
       name: "sync",
       description: "Add tool versions from external tools to mise",
+      subcommands: [
+        {
+          name: "node",
+          description:
+            "Symlinks all tool versions from an external tool into mise",
+          options: [
+            {
+              name: "--brew",
+              description: "Get tool versions from Homebrew",
+            },
+            {
+              name: "--nvm",
+              description: "Get tool versions from nvm",
+            },
+            {
+              name: "--nodenv",
+              description: "Get tool versions from nodenv",
+            },
+          ],
+        },
+        {
+          name: "python",
+          description:
+            "Symlinks all tool versions from an external tool into mise",
+          options: [
+            {
+              name: "--pyenv",
+              description: "Get tool versions from pyenv",
+            },
+          ],
+        },
+        {
+          name: "help",
+          description:
+            "Print this message or the help of the given subcommand(s)",
+        },
+      ],
     },
     {
       name: ["tasks", "t"],
       description: "[experimental] Manage tasks",
+      subcommands: [
+        {
+          name: "deps",
+          description:
+            "[experimental] Display a tree visualization of a dependency graph",
+        },
+        {
+          name: "edit",
+          description: "[experimental] Edit a tasks with $EDITOR",
+        },
+        {
+          name: "ls",
+          description:
+            "[experimental] List available tasks to execute \n These may be included from the config file or from the project's .mise/tasks directory \n mise will merge all tasks from all parent directories into this list",
+        },
+        {
+          name: ["run", "r"],
+          description: "[experimental] Run a tasks",
+        },
+        {
+          name: "help",
+          description:
+            "Print this message or the help of the given subcommand(s)",
+        },
+      ],
+      options: [
+        {
+          name: "--no-header",
+          description: "Do not print table header",
+        },
+        {
+          name: ["-x", "--extended"],
+          description: "Show all columns",
+        },
+        {
+          name: "--hidden",
+          description: "Show hidden tasks",
+        },
+        {
+          name: "--sort",
+          description: "Sort by column. Default is name",
+          args: {
+            name: "COLUMN",
+            default: "name",
+            suggestions: ["name", "alias", "description", "source"],
+          },
+        },
+        {
+          name: "--sort-order",
+          description: "Sort order. Default is asc",
+          args: {
+            name: "SORT_ORDER",
+            default: "asc",
+            suggestions: ["asc", "desc"],
+          },
+        },
+        {
+          name: ["-J", "--json"],
+          description: "Output in JSON format",
+        },
+      ],
     },
     {
       name: "trust",
       description: "Marks a config file as trusted",
+      args: {
+        name: "CONFIG_FILE",
+        description: "The config file to trust",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-a", "--all"],
+          description:
+            "Trust all config files in the current directory and its parents",
+        },
+        {
+          name: "--untrust",
+          description: "No longer trust this config",
+        },
+        {
+          name: "--show",
+          description:
+            "Show the trusted status of config files from the current directory and its parents. Does not trust or untrust any files",
+        },
+      ],
     },
     {
       name: ["uninstall", "remove", "rm"],
       description: "Removes runtime versions",
+      isDangerous: true,
+      args: {
+        name: "INSTALLED_TOOL@VERSION",
+        description: "Tool(s) to remove",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-a", "--all"],
+          description: "Delete all installed versions",
+        },
+        {
+          name: ["-n", "--dry-run"],
+          description: "Do not actually delete anything",
+        },
+      ],
     },
     {
       name: "unset",
       description: "Remove environment variable(s) from the config file",
+      args: {
+        name: "KEYS",
+        description: "Environment variable(s) to remove \n e.g.: NODE_ENV",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-f", "--file"],
+          description: "Specify a file to use instead of `.mise.toml`",
+          args: {
+            name: "FILE",
+          },
+        },
+        {
+          name: ["-g", "--global"],
+          description: "Use the global config file",
+        },
+      ],
     },
     {
       name: ["upgrade", "up"],
       description: "Upgrades outdated tool versions",
+      args: {
+        name: "TOOL@VERSION",
+        description:
+          "Tool(s) to upgrade \n e.g.: node@20 python@3.10 \n If not specified, all current tools will be upgraded",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-n", "--dry-run"],
+          description: "Just print what would be done, don't actually do it",
+        },
+        {
+          name: ["-j", "--jobs"],
+          description:
+            "Number of jobs to run in parallel [default: 4] [env: MISE_JOBS=]",
+          args: {
+            name: "JOBS",
+          },
+        },
+        {
+          name: "--raw",
+          description:
+            "Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1",
+        },
+        {
+          name: ["-i", "--interactive"],
+          description:
+            "Display multiselect menu to choose which tools to upgrade",
+        },
+      ],
     },
     {
       name: "usage",
@@ -710,6 +1082,68 @@ const completionSpec: Fig.Spec = {
     {
       name: ["use", "u"],
       description: "Install tool version and add it to config",
+      args: {
+        name: "TOOL@VERSION",
+        description:
+          "Tool(s) to add to config file \n e.g.: node@20, cargo:ripgrep@latest npm:prettier@3 \n If no version is specified, it will default to @latest",
+      },
+      options: [
+        {
+          name: ["-f", "--force"],
+          description: "Force reinstall even if already installed",
+        },
+        {
+          name: "--fuzzy",
+          description:
+            "Save fuzzy version to config file \n e.g.: `mise use --fuzzy node@20` will save 20 as the version \n this is the default behavior unless MISE_ASDF_COMPAT=1",
+        },
+        {
+          name: ["-g", "--global"],
+          description:
+            "Use the global config file (~/.config/mise/config.toml) instead of the local one",
+        },
+        {
+          name: ["-e", "--env"],
+          description:
+            "Modify an environment-specific config file like .mise.<env>.toml",
+          args: {
+            name: "ENV",
+          },
+        },
+        {
+          name: ["-j", "--jobs"],
+          description:
+            "Number of jobs to run in parallel [default: 4] [env: MISE_JOBS=]",
+          args: {
+            name: "JOBS",
+          },
+        },
+        {
+          name: "--raw",
+          description:
+            "Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1",
+        },
+        {
+          name: "--remove",
+          description: "Remove the plugin(s) from config file",
+          args: {
+            name: "PLUGIN",
+          },
+        },
+        {
+          name: ["-p", "--path"],
+          description:
+            "Specify a path to a config file or directory If a directory is specified, it will look for .mise.toml (default) or .tool-versions",
+          args: {
+            name: "PATH",
+          },
+        },
+        {
+          name: "--pin",
+          description:
+            "Save exact version to config file \n e.g.: `mise use --pin node@20` will save 20.0.0 as the version \n Set MISE_ASDF_COMPAT=1 to make this the default behavior",
+        },
+      ],
     },
     {
       name: "version",
@@ -718,14 +1152,65 @@ const completionSpec: Fig.Spec = {
     {
       name: ["watch", "w"],
       description: "[experimental] Run a tasks watching for changes",
+      args: {
+        name: "ARGS",
+        description: "Extra arguments",
+        isOptional: true,
+      },
+      options: [
+        {
+          name: ["-t", "--task"],
+          description: "Tasks to run [default: default]",
+          args: {
+            name: "TASK",
+            default: "default",
+          },
+        },
+        {
+          name: ["-g", "--glob"],
+          description:
+            "Files to watch \n Defaults to sources from the tasks(s)",
+          args: {
+            name: "GLOB",
+          },
+        },
+      ],
     },
     {
       name: "where",
       description: "Display the installation path for a runtime",
+      args: {
+        name: "TOOL@VERSION",
+        description:
+          'Tool(s) to look up \n e.g.: ruby@3 \n if "@<PREFIX>" is specified, it will show the latest installed version \n that matches the prefix \n otherwise, it will show the current, active installed version',
+        isOptional: true,
+      },
     },
     {
       name: "which",
       description: "Shows the path that a bin name points to",
+      args: {
+        name: "BIN_NAME",
+        description: "The bin name to look up",
+      },
+      options: [
+        {
+          name: "--plugin",
+          description: "Show the plugin name instead of the path",
+        },
+        {
+          name: "--version",
+          description: "Show the version instead of the path",
+        },
+        {
+          name: ["-t", "--tool"],
+          description:
+            "Use a specific tool@version \n e.g.: `mise which npm --tool=node@20`",
+          args: {
+            name: "TOOL@VERSION",
+          },
+        },
+      ],
     },
     {
       name: "help",
