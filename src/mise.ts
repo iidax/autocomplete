@@ -1,3 +1,24 @@
+const PRIORITY_TOP_THRESHOLD = 76;
+
+/*
+ *  Generators
+ */
+const installedPluginNamesGenerator = (
+  suggestOptions?: Partial<Fig.Suggestion>
+): Fig.Generator => ({
+  script: ["mise", "plugins", "ls", "--quiet"],
+  postProcess: function (out) {
+    return out.split("\n").map((pluginName) => {
+      return {
+        name: `${pluginName}`,
+        description: "Plugin name",
+        priority: PRIORITY_TOP_THRESHOLD,
+        ...suggestOptions,
+      };
+    });
+  },
+});
+
 const commonOptions: Fig.Option[] = [
   {
     name: ["-h", "--help"],
@@ -27,6 +48,7 @@ const commonOptions: Fig.Option[] = [
     description: "Change directory before running command",
     args: {
       name: "DIR",
+      template: "folders",
     },
     isPersistent: true,
   },
@@ -543,17 +565,8 @@ const completionSpec: Fig.Spec = {
             description: "Plugin(s) to remove",
             isOptional: true,
             isDangerous: true,
-            generators: {
-              script: ["mise", "plugins", "ls", "--quiet"],
-              postProcess: (out) => {
-                return out
-                  .split("\n")
-                  .filter(Boolean)
-                  .map((pluginName) => ({
-                    name: pluginName,
-                  }));
-              },
-            },
+            isVariadic: true,
+            generators: installedPluginNamesGenerator(),
           },
           options: [
             {
@@ -574,18 +587,8 @@ const completionSpec: Fig.Spec = {
             name: "PLUGIN",
             description: "Plugin(s) to update",
             isOptional: true,
-            isDangerous: true,
-            generators: {
-              script: ["mise", "plugins", "ls", "--quiet"],
-              postProcess: (out) => {
-                return out
-                  .split("\n")
-                  .filter(Boolean)
-                  .map((pluginName) => ({
-                    name: pluginName,
-                  }));
-              },
-            },
+            isVariadic: true,
+            generators: installedPluginNamesGenerator(),
           },
           options: [
             {
